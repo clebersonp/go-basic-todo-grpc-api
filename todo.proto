@@ -4,11 +4,17 @@ option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/proto";
 
 import "google/protobuf/timestamp.proto";
 
+enum Status {
+  CANCELED = 0;
+  CREATED = 1;
+  DONE = 2;
+}
+
 message Todo {
   string id = 1;
   string title = 2;
   string description = 3;
-  string status = 4;
+  Status status = 4;
   google.protobuf.Timestamp createdAt = 5;
   google.protobuf.Timestamp updatedAt = 6;
 
