@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func (t *TaskerServer) GetByID(ctx context.Context, req *pb.GetRequest) (*pb.Todo, error) {
+func (t *TaskerServer) GetByID(ctx context.Context, req *pb.GetRequest) (*pb.GetByIdResponse, error) {
 	reqId := header.GetRequestID(ctx)
 	todoID := req.GetId()
 	log.Printf("%s: %s, TodoID: %s\n", header.XRequestID, reqId, todoID)
@@ -26,7 +26,7 @@ func (t *TaskerServer) GetByID(ctx context.Context, req *pb.GetRequest) (*pb.Tod
 		log.Println(e)
 		return nil, e
 	}
-	return todo, nil
+	return &pb.GetByIdResponse{Todo: todo}, nil
 }
 
 func validateId(id string) error {
