@@ -3,6 +3,7 @@ syntax = "proto3";
 option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/proto";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 enum Status {
   CANCELED = 0;
@@ -34,7 +35,17 @@ message GetRequest {
   string id = 1;
 }
 
+message GetByIdResponse {
+  Todo todo = 1;
+}
+
+message TodoListResponse {
+  int64 count = 1;
+  repeated Todo todos = 2;
+}
+
 service Tasker {
   rpc Create(CreateRequest) returns (CreateResponse);
-  rpc GetByID(GetRequest) returns (Todo);
+  rpc GetByID(GetRequest) returns (GetByIdResponse);
+  rpc GetAll(google.protobuf.Empty) returns (TodoListResponse);
 }

@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,7 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskerClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Todo, error)
+	GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
+	GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TodoListResponse, error)
 }
 
 type taskerClient struct {
@@ -43,9 +45,18 @@ func (c *taskerClient) Create(ctx context.Context, in *CreateRequest, opts ...gr
 	return out, nil
 }
 
-func (c *taskerClient) GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Todo, error) {
-	out := new(Todo)
+func (c *taskerClient) GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetByIdResponse, error) {
+	out := new(GetByIdResponse)
 	err := c.cc.Invoke(ctx, "/Tasker/GetByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *taskerClient) GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TodoListResponse, error) {
+	out := new(TodoListResponse)
+	err := c.cc.Invoke(ctx, "/Tasker/GetAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +68,8 @@ func (c *taskerClient) GetByID(ctx context.Context, in *GetRequest, opts ...grpc
 // for forward compatibility
 type TaskerServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	GetByID(context.Context, *GetRequest) (*Todo, error)
+	GetByID(context.Context, *GetRequest) (*GetByIdResponse, error)
+	GetAll(context.Context, *emptypb.Empty) (*TodoListResponse, error)
 	mustEmbedUnimplementedTaskerServer()
 }
 
@@ -68,8 +80,11 @@ type UnimplementedTaskerServer struct {
 func (UnimplementedTaskerServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTaskerServer) GetByID(context.Context, *GetRequest) (*Todo, error) {
+func (UnimplementedTaskerServer) GetByID(context.Context, *GetRequest) (*GetByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
+}
+func (UnimplementedTaskerServer) GetAll(context.Context, *emptypb.Empty) (*TodoListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedTaskerServer) mustEmbedUnimplementedTaskerServer() {}
 
@@ -120,6 +135,24 @@ func _Tasker_GetByID_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasker_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskerServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Tasker/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskerServer).GetAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tasker_ServiceDesc is the grpc.ServiceDesc for Tasker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +167,10 @@ var Tasker_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByID",
 			Handler:    _Tasker_GetByID_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _Tasker_GetAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
