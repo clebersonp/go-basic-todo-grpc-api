@@ -24,6 +24,11 @@ message CreateResponse {
   string description = 2;
 }
 
+message GetRequest {
+  string id = 1;
+}
+
 service Tasker {
   rpc Create(CreateRequest) returns (CreateResponse);
+  rpc GetByID(GetRequest) returns (Todo);
 }

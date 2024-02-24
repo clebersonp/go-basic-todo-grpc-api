@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskerClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Todo, error)
 }
 
 type taskerClient struct {
@@ -42,11 +43,21 @@ func (c *taskerClient) Create(ctx context.Context, in *CreateRequest, opts ...gr
 	return out, nil
 }
 
+func (c *taskerClient) GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Todo, error) {
+	out := new(Todo)
+	err := c.cc.Invoke(ctx, "/Tasker/GetByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskerServer is the server API for Tasker service.
 // All implementations must embed UnimplementedTaskerServer
 // for forward compatibility
 type TaskerServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	GetByID(context.Context, *GetRequest) (*Todo, error)
 	mustEmbedUnimplementedTaskerServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedTaskerServer struct {
 
 func (UnimplementedTaskerServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedTaskerServer) GetByID(context.Context, *GetRequest) (*Todo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
 }
 func (UnimplementedTaskerServer) mustEmbedUnimplementedTaskerServer() {}
 
@@ -88,6 +102,24 @@ func _Tasker_Create_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasker_GetByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskerServer).GetByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Tasker/GetByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskerServer).GetByID(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tasker_ServiceDesc is the grpc.ServiceDesc for Tasker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Tasker_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Tasker_Create_Handler,
+		},
+		{
+			MethodName: "GetByID",
+			Handler:    _Tasker_GetByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
