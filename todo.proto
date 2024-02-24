@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/model";
+
+message Todo {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string status = 4;
+}
+
+message CreateRequest {
+  Todo todo = 1;
+}
+
+message CreateResponse {
+  bool error = 1;
+  string description = 2;
+}
+
+service Tasker {
+  rpc Create(CreateRequest) returns (CreateResponse);
+}
