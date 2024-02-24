@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"log"
 )
 
 func RequestID(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
@@ -15,12 +16,14 @@ func RequestID(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler gr
 	ctx = metadata.NewOutgoingContext(ctx, md)
 	err = grpc.SendHeader(ctx, md)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
 	trailer := metadata.Pairs("some-key", "some-value")
 	err = grpc.SetTrailer(ctx, trailer)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
