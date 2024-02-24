@@ -6,6 +6,7 @@ import (
 )
 
 const XRequestID = "x-request-id"
+const TodoID = "todo-id"
 
 func GetRequestID(ctx context.Context) string {
 	var reqId string
