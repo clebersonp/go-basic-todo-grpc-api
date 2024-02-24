@@ -1,24 +1,18 @@
 package model
 
-import "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+import pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
 
-const (
-	created  = "CREATED"
-	canceled = "CANCELED"
-	done     = "DONE"
-)
-
-var todos = make(map[string]*proto.Todo)
+var todos = make(map[string]*pb.Todo)
 
 type TaskerServer struct {
-	proto.UnimplementedTaskerServer
+	pb.UnimplementedTaskerServer
 }
 
-func add(todo *proto.Todo) {
+func add(todo *pb.Todo) {
 	todos[todo.Id] = todo
 }
 
-func get(id string) (*proto.Todo, bool) {
+func get(id string) (*pb.Todo, bool) {
 	todo, ok := todos[id]
 	return todo, ok
 }
