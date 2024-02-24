@@ -8,12 +8,17 @@ const (
 	done     = "DONE"
 )
 
-var todos []*proto.Todo
+var todos = make(map[string]*proto.Todo)
 
 type TaskerServer struct {
 	proto.UnimplementedTaskerServer
 }
 
 func add(todo *proto.Todo) {
-	todos = append(todos, todo)
+	todos[todo.Id] = todo
+}
+
+func get(id string) (*proto.Todo, bool) {
+	todo, ok := todos[id]
+	return todo, ok
 }
