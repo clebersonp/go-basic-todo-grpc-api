@@ -4,12 +4,12 @@ import (
 	"context"
 	"github.com/clebersonp/go-basic-todo-grpc-api/failure"
 	"github.com/clebersonp/go-basic-todo-grpc-api/header"
-	"github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
 	"github.com/google/uuid"
 	"log"
 )
 
-func (t *TaskerServer) GetByID(ctx context.Context, req *proto.GetRequest) (*proto.Todo, error) {
+func (t *TaskerServer) GetByID(ctx context.Context, req *pb.GetRequest) (*pb.Todo, error) {
 	reqId := header.GetRequestID(ctx)
 	todoID := req.GetId()
 	log.Printf("%s: %s, TodoID: %s\n", header.XRequestID, reqId, todoID)
