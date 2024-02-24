@@ -9,15 +9,21 @@ import (
 	"strings"
 )
 
+const bearerTokenSecret = "some-secret-token"
+
 func EnsureValidToken(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 	log.Println("Info:", info)
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return nil, failure.ErrMissingMetadata
+		e := failure.ErrMissingMetadata
+		log.Println(e)
+		return nil, e
 	}
 
 	if !valid(md["authorization"]) {
-		return nil, failure.ErrInvalidToken
+		e := failure.ErrInvalidToken
+		log.Println(e)
+		return nil, e
 	}
 
 	return handler(ctx, req)
@@ -28,5 +34,5 @@ func valid(authorization []string) bool {
 		return false
 	}
 	token := strings.TrimPrefix(authorization[0], "Bearer ")
-	return token == "some-secret-token"
+	return token == bearerTokenSecret
 }
