@@ -3,7 +3,7 @@ package model
 import (
 	"context"
 	"github.com/clebersonp/go-basic-todo-grpc-api/header"
-	"github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -11,16 +11,16 @@ import (
 	"log"
 )
 
-func (t *TaskerServer) Create(ctx context.Context, req *proto.CreateRequest) (*proto.CreateResponse, error) {
+func (t *TaskerServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	reqId := header.GetRequestID(ctx)
 	log.Printf("Todo %v for X-Request-ID %q will be created", req, reqId)
 
 	now := timestamppb.Now()
-	newTodo := &proto.Todo{
+	newTodo := &pb.Todo{
 		Id:          uuid.New().String(),
 		Title:       req.Title,
 		Description: req.Description,
-		Status:      created,
+		Status:      pb.Status_CREATED,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
@@ -34,7 +34,7 @@ func (t *TaskerServer) Create(ctx context.Context, req *proto.CreateRequest) (*p
 		return nil, err
 	}
 
-	resp := &proto.CreateResponse{
+	resp := &pb.CreateResponse{
 		Error:       false,
 		Description: "Todo created.",
 	}
