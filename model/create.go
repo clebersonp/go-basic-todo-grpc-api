@@ -11,7 +11,7 @@ import (
 	"log"
 )
 
-func (t *TaskerServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
+func (t *TaskerServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Response, error) {
 	reqId := header.GetRequestID(ctx)
 	log.Printf("Todo %v for X-Request-ID %q will be created", req, reqId)
 
@@ -34,7 +34,7 @@ func (t *TaskerServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.C
 		return nil, err
 	}
 
-	resp := &pb.CreateResponse{
+	resp := &pb.Response{
 		Error:       false,
 		Description: "Todo created.",
 	}
