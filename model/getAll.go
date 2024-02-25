@@ -6,11 +6,8 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (t *TaskerServer) GetAll(ctx context.Context, empty *emptypb.Empty) (*pb.TodoListResponse, error) {
-	var list []*pb.Todo
-	for _, v := range todos {
-		list = append(list, v)
-	}
+func (t *TaskerServer) GetAll(_ context.Context, _ *emptypb.Empty) (*pb.TodoListResponse, error) {
+	list := getAll()
 	return &pb.TodoListResponse{
 		Count: int64(len(list)),
 		Todos: list,
