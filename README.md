@@ -28,7 +28,7 @@ See doc for [Go](https://grpc.io/docs/languages/go/quickstart/#regenerate-grpc-c
 Run Makefile target to facilitate the generation of *gRPC code* after each modification to the *.proto* file
 
 ```shell
-make generate-todo-protoc
+make generate-all-protoc
 ```
 
 ## Resolve dependencies
