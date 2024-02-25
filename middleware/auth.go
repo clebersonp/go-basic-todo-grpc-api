@@ -9,10 +9,20 @@ import (
 	"strings"
 )
 
-const bearerTokenSecret = "some-secret-token"
+const (
+	bearerTokenSecret  = "some-secret-token"
+	bypassSignUpMethod = "/Users/SignUp"
+	bypassSignInMethod = "/Users/SignIn"
+)
 
 func EnsureValidToken(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-	log.Println("Info:", info)
+	method := info.FullMethod
+	log.Println("Token Validation Method:", method)
+	if bypassSignUpMethod == method || bypassSignInMethod == method {
+		log.Println("Bypass Method:", method)
+		return handler(ctx, req)
+	}
+
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		e := failure.ErrMissingMetadata
