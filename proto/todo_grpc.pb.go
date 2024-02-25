@@ -27,6 +27,7 @@ type TaskerClient interface {
 	GetByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
 	GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TodoListResponse, error)
 	DeleteByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Update(ctx context.Context, in *TodoUpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type taskerClient struct {
@@ -73,6 +74,15 @@ func (c *taskerClient) DeleteByID(ctx context.Context, in *TodoByIdRequest, opts
 	return out, nil
 }
 
+func (c *taskerClient) Update(ctx context.Context, in *TodoUpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/Tasker/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskerServer is the server API for Tasker service.
 // All implementations must embed UnimplementedTaskerServer
 // for forward compatibility
@@ -81,6 +91,7 @@ type TaskerServer interface {
 	GetByID(context.Context, *TodoByIdRequest) (*GetByIdResponse, error)
 	GetAll(context.Context, *emptypb.Empty) (*TodoListResponse, error)
 	DeleteByID(context.Context, *TodoByIdRequest) (*emptypb.Empty, error)
+	Update(context.Context, *TodoUpdateRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedTaskerServer()
 }
 
@@ -99,6 +110,9 @@ func (UnimplementedTaskerServer) GetAll(context.Context, *emptypb.Empty) (*TodoL
 }
 func (UnimplementedTaskerServer) DeleteByID(context.Context, *TodoByIdRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteByID not implemented")
+}
+func (UnimplementedTaskerServer) Update(context.Context, *TodoUpdateRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedTaskerServer) mustEmbedUnimplementedTaskerServer() {}
 
@@ -185,6 +199,24 @@ func _Tasker_DeleteByID_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasker_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TodoUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskerServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Tasker/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskerServer).Update(ctx, req.(*TodoUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tasker_ServiceDesc is the grpc.ServiceDesc for Tasker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -207,6 +239,10 @@ var Tasker_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteByID",
 			Handler:    _Tasker_DeleteByID_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _Tasker_Update_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

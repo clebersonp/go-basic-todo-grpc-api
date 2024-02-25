@@ -44,9 +44,17 @@ message TodoListResponse {
   repeated Todo todos = 2;
 }
 
+message TodoUpdateRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  Status status = 4;
+}
+
 service Tasker {
   rpc Create(CreateRequest) returns (Response);
   rpc GetByID(TodoByIdRequest) returns (GetByIdResponse);
   rpc GetAll(google.protobuf.Empty) returns (TodoListResponse);
   rpc DeleteByID(TodoByIdRequest) returns (google.protobuf.Empty);
+  rpc Update(TodoUpdateRequest) returns (google.protobuf.Empty);
 }
