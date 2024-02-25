@@ -1,6 +1,11 @@
 package model
 
-import pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+import (
+	"github.com/clebersonp/go-basic-todo-grpc-api/failure"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	"github.com/clebersonp/go-basic-todo-grpc-api/validation"
+	"google.golang.org/protobuf/types/known/timestamppb"
+)
 
 var todos = make(map[string]*pb.Todo)
 
@@ -27,4 +32,25 @@ func getAll() []*pb.Todo {
 
 func deleteById(id string) {
 	delete(todos, id)
+}
+
+func update(todo *pb.Todo) error {
+	if todo == nil {
+		return failure.ErrTodoRequired
+	}
+	if err := validation.TodoId(todo.Id); err != nil {
+		return err
+	}
+
+	todoDb, ok := getById(todo.Id)
+	if !ok {
+		return failure.ErrTodoNotFound
+	}
+
+	todoDb.Title = todo.Title
+	todoDb.Description = todo.Description
+	todoDb.Status = todo.Status
+	todoDb.UpdatedAt = timestamppb.Now()
+
+	return nil
 }
