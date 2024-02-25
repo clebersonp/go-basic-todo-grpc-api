@@ -12,7 +12,19 @@ func add(todo *pb.Todo) {
 	todos[todo.Id] = todo
 }
 
-func get(id string) (*pb.Todo, bool) {
+func getById(id string) (*pb.Todo, bool) {
 	todo, ok := todos[id]
 	return todo, ok
+}
+
+func getAll() []*pb.Todo {
+	var list []*pb.Todo
+	for _, v := range todos {
+		list = append(list, v)
+	}
+	return list
+}
+
+func deleteById(id string) {
+	delete(todos, id)
 }
