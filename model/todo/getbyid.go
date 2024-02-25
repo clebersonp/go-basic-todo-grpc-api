@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func (t *TaskerServer) GetByID(ctx context.Context, req *pb.TodoByIdRequest) (*pb.GetByIdResponse, error) {
+func (t *TaskerServer) GetByID(ctx context.Context, req *pb.TodoByIdRequest) (*pb.GetTodoByIdResponse, error) {
 	reqId := header.GetRequestID(ctx)
 	todoID := req.GetId()
 	log.Printf("%s: %s, TodoID: %s\n", header.XRequestID, reqId, todoID)
@@ -26,5 +26,5 @@ func (t *TaskerServer) GetByID(ctx context.Context, req *pb.TodoByIdRequest) (*p
 		log.Println(e)
 		return nil, e
 	}
-	return &pb.GetByIdResponse{Todo: todo}, nil
+	return &pb.GetTodoByIdResponse{Todo: todo}, nil
 }
