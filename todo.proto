@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/proto";
+option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
@@ -35,7 +35,7 @@ message TodoByIdRequest {
   string id = 1;
 }
 
-message GetByIdResponse {
+message GetTodoByIdResponse {
   Todo todo = 1;
 }
 
@@ -53,7 +53,7 @@ message TodoUpdateRequest {
 
 service Tasker {
   rpc Create(CreateRequest) returns (Response);
-  rpc GetByID(TodoByIdRequest) returns (GetByIdResponse);
+  rpc GetByID(TodoByIdRequest) returns (GetTodoByIdResponse);
   rpc GetAll(google.protobuf.Empty) returns (TodoListResponse);
   rpc DeleteByID(TodoByIdRequest) returns (google.protobuf.Empty);
   rpc Update(TodoUpdateRequest) returns (google.protobuf.Empty);
