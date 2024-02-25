@@ -1,4 +1,4 @@
-generate-protoc:
+generate-todo-protoc:
 	protoc \
 	--go_out=proto \
 	--go_opt=paths=source_relative \
