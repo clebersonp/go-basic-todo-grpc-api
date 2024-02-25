@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option go_package = "github.com/clebersonp/go-basic-todo-grpc-api/proto/user";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string password = 3;
+  google.protobuf.Timestamp createdAt = 4;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserResponse {
+  string token = 1;
+  int64 expires_in = 2;
+}
+
+service Users {
+  rpc SignUp(CreateUserRequest) returns (google.protobuf.Empty);
+  rpc SignIn(LoginUserRequest) returns (LoginUserResponse);
+}
