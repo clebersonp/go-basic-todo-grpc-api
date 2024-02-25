@@ -10,5 +10,6 @@ var (
 	ErrInvalidToken    = status.Error(codes.Unauthenticated, "invalid token")
 	ErrInvalidTodoID   = status.Error(codes.InvalidArgument, "invalid todo id")
 	ErrTodoIdRequired  = status.Error(codes.InvalidArgument, "todo id is required")
+	ErrTodoRequired    = status.Error(codes.InvalidArgument, "todo is required")
 	ErrTodoNotFound    = status.Error(codes.NotFound, "todo not found")
 )
