@@ -1,10 +1,10 @@
-package model
+package todo
 
 import (
 	"context"
 	"github.com/clebersonp/go-basic-todo-grpc-api/failure"
 	"github.com/clebersonp/go-basic-todo-grpc-api/header"
-	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo"
 	"github.com/clebersonp/go-basic-todo-grpc-api/validation"
 	"log"
 )

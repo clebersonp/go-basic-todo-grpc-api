@@ -1,8 +1,8 @@
-package model
+package todo
 
 import (
 	"github.com/clebersonp/go-basic-todo-grpc-api/failure"
-	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo"
 	"github.com/clebersonp/go-basic-todo-grpc-api/validation"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

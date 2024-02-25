@@ -1,9 +1,9 @@
-package model
+package todo
 
 import (
 	"context"
 	"github.com/clebersonp/go-basic-todo-grpc-api/header"
-	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto"
+	pb "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
