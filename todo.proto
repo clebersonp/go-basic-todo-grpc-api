@@ -26,12 +26,12 @@ message CreateRequest {
   string description = 2;
 }
 
-message CreateResponse {
+message Response {
   bool error = 1;
   string description = 2;
 }
 
-message GetRequest {
+message TodoByIdRequest {
   string id = 1;
 }
 
@@ -45,7 +45,8 @@ message TodoListResponse {
 }
 
 service Tasker {
-  rpc Create(CreateRequest) returns (CreateResponse);
-  rpc GetByID(GetRequest) returns (GetByIdResponse);
+  rpc Create(CreateRequest) returns (Response);
+  rpc GetByID(TodoByIdRequest) returns (GetByIdResponse);
   rpc GetAll(google.protobuf.Empty) returns (TodoListResponse);
+  rpc DeleteByID(TodoByIdRequest) returns (google.protobuf.Empty);
 }

@@ -23,9 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskerClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*Response, error)
+	GetByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
 	GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TodoListResponse, error)
+	DeleteByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type taskerClient struct {
@@ -36,8 +37,8 @@ func NewTaskerClient(cc grpc.ClientConnInterface) TaskerClient {
 	return &taskerClient{cc}
 }
 
-func (c *taskerClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
+func (c *taskerClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/Tasker/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -45,7 +46,7 @@ func (c *taskerClient) Create(ctx context.Context, in *CreateRequest, opts ...gr
 	return out, nil
 }
 
-func (c *taskerClient) GetByID(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetByIdResponse, error) {
+func (c *taskerClient) GetByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error) {
 	out := new(GetByIdResponse)
 	err := c.cc.Invoke(ctx, "/Tasker/GetByID", in, out, opts...)
 	if err != nil {
@@ -63,13 +64,23 @@ func (c *taskerClient) GetAll(ctx context.Context, in *emptypb.Empty, opts ...gr
 	return out, nil
 }
 
+func (c *taskerClient) DeleteByID(ctx context.Context, in *TodoByIdRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/Tasker/DeleteByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskerServer is the server API for Tasker service.
 // All implementations must embed UnimplementedTaskerServer
 // for forward compatibility
 type TaskerServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	GetByID(context.Context, *GetRequest) (*GetByIdResponse, error)
+	Create(context.Context, *CreateRequest) (*Response, error)
+	GetByID(context.Context, *TodoByIdRequest) (*GetByIdResponse, error)
 	GetAll(context.Context, *emptypb.Empty) (*TodoListResponse, error)
+	DeleteByID(context.Context, *TodoByIdRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedTaskerServer()
 }
 
@@ -77,14 +88,17 @@ type TaskerServer interface {
 type UnimplementedTaskerServer struct {
 }
 
-func (UnimplementedTaskerServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+func (UnimplementedTaskerServer) Create(context.Context, *CreateRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedTaskerServer) GetByID(context.Context, *GetRequest) (*GetByIdResponse, error) {
+func (UnimplementedTaskerServer) GetByID(context.Context, *TodoByIdRequest) (*GetByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
 }
 func (UnimplementedTaskerServer) GetAll(context.Context, *emptypb.Empty) (*TodoListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedTaskerServer) DeleteByID(context.Context, *TodoByIdRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteByID not implemented")
 }
 func (UnimplementedTaskerServer) mustEmbedUnimplementedTaskerServer() {}
 
@@ -118,7 +132,7 @@ func _Tasker_Create_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _Tasker_GetByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRequest)
+	in := new(TodoByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -130,7 +144,7 @@ func _Tasker_GetByID_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/Tasker/GetByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskerServer).GetByID(ctx, req.(*GetRequest))
+		return srv.(TaskerServer).GetByID(ctx, req.(*TodoByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -153,6 +167,24 @@ func _Tasker_GetAll_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasker_DeleteByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TodoByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskerServer).DeleteByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Tasker/DeleteByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskerServer).DeleteByID(ctx, req.(*TodoByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Tasker_ServiceDesc is the grpc.ServiceDesc for Tasker service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -171,6 +203,10 @@ var Tasker_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _Tasker_GetAll_Handler,
+		},
+		{
+			MethodName: "DeleteByID",
+			Handler:    _Tasker_DeleteByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
