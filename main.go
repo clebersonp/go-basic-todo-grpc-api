@@ -6,8 +6,8 @@ import (
 	"github.com/clebersonp/go-basic-todo-grpc-api/middleware"
 	"github.com/clebersonp/go-basic-todo-grpc-api/model/todo"
 	"github.com/clebersonp/go-basic-todo-grpc-api/model/user"
-	todo_pb "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo"
-	user_pb "github.com/clebersonp/go-basic-todo-grpc-api/proto/user"
+	todopb "github.com/clebersonp/go-basic-todo-grpc-api/proto/todo"
+	userpb "github.com/clebersonp/go-basic-todo-grpc-api/proto/user"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -30,8 +30,8 @@ func main() {
 	}
 
 	serverRegistrar := grpc.NewServer(opts...)
-	todo_pb.RegisterTaskerServer(serverRegistrar, &todo.TaskerServer{})
-	user_pb.RegisterUsersServer(serverRegistrar, &user.ServerUser{})
+	todopb.RegisterTaskerServer(serverRegistrar, &todo.TaskerServer{})
+	userpb.RegisterUsersServer(serverRegistrar, &user.ServerUser{})
 
 	log.Println("Listen at:", listen.Addr())
 	err = serverRegistrar.Serve(listen)
