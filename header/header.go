@@ -5,8 +5,11 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const XRequestID = "x-request-id"
-const TodoID = "todo-id"
+const (
+	XRequestID = "x-request-id"
+	TodoID     = "todo-id"
+	UserId     = "user-id"
+)
 
 func GetRequestID(ctx context.Context) string {
 	var reqId string
